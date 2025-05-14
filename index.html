@@ -67,23 +67,49 @@
 <script>
     const socket = io();
 
-    const form = document.getElementById('form');
-    const input = document.getElementById('input');
+    socket.on('connect', () => console.log(1, socket.id));
+    socket.on('disconnect', () => console.log(2, socket.id));
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (input.value) {
-            socket.emit('chat message', input.value);
-            input.value = '';
-        }
-    });
+    // socket.on('history', (messages) => {console.log({messages})});
+
+    socket.on('history', (messages) => {
+        const ul = document.getElementById('messages');
+        ul.innerHTML = ''; // limpa a lista antes de popular
+
+        messages.forEach((msg) => {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            ul.appendChild(li);
+        });
+    })
+
+    // const form = document.getElementById('form');
+    // const input = document.getElementById('input');
+
+    function teste() {
+        const input = document.getElementById('input');
+
+        const value = input.value;
+        socket.emit('chat message', value);
+    }
+
+    // form.addEventListener('submit', (e) => {
+    //    e.preventDefault();
+
+    //    if (input.value) {
+    //       socket.emit('chat message', input.value);
+    //        input.value = '';
+    //   }
+    // });
 </script>
 
 <body>
     <ul id="messages"></ul>
-    <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
+
+    <div id="form">
+        <input id="input" autocomplete="off" />
+        <button type="submit">Send</button>
+    </div>
 </body>
 
 </html>

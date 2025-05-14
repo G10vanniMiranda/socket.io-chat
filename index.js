@@ -14,8 +14,14 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 });
 
+let messages = []
+
 io.on('connection', (socket) => {
+  console.log(socket.id, socket.handshake.query)
+  io.to(socket.id).emit('history', messages)
+
   socket.on('chat message', (msg) => {
+    messages.push(`${socket.id}: ${msg}`)
     console.log('message: ' + msg);
   }); 
 });
